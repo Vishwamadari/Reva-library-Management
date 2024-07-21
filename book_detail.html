@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Detail</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <style>
+        .container {
+            margin-top: 20px;
+        }
+        .form-control[readonly] {
+            background-color: #f8f9fa;
+        }
+        .btn-edit {
+            margin-right: 10px;
+        }
+    </style>
+    <!-- JavaScript -->
+    <script>
+        function enableEditing() {
+            document.querySelectorAll('#book-form input, #book-form textarea').forEach(element => {
+                if (element.type !== 'hidden') {
+                    element.removeAttribute('readonly');
+                }
+            });
+            document.getElementById('edit-button').style.display = 'none';
+            document.getElementById('save-button').style.display = 'inline';
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4">Book Details</h1>
+        <form id="book-form" action="{% url 'edit-book' book.id %}" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" class="form-control" value="{{ book.title }}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="author">Author:</label>
+                <input type="text" id="author" name="author" class="form-control" value="{{ book.author }}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="publication_year">Publication Year:</label>
+                <input type="number" id="publication_year" name="publication_year" class="form-control" value="{{ book.publication_year }}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="genre">Genre:</label>
+                <input type="text" id="genre" name="genre" class="form-control" value="{{ book.genre }}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="isbn">ISBN:</label>
+                <input type="text" id="isbn" name="isbn" class="form-control" value="{{ book.isbn }}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" class="form-control" readonly>{{ book.description }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="price">Price:</label>
+                <input type="number" step="0.01" id="price" name="price" class="form-control" value="{{ book.price }}" readonly>
+            </div>
+            <div class="form-group">
+                <button type="button" id="edit-button" class="btn btn-primary btn-edit" onclick="enableEditing()">Edit Book Details</button>
+                <button type="submit" id="save-button" class="btn btn-success" style="display: none;">Save</button>
+            </div>
+        </form>
+
+        {% if is_admin %}
+            <div class="form-group">
+                <form action="{% url 'delete-book' book.id %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="submit" class="btn btn-danger" value="Delete Book" onclick="return confirm('Are you sure you want to delete this book?');">
+                </form>
+            </div>
+            <h2 class="mt-4">Borrowing Records</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Student ID</th>
+                        <th>Branch</th>
+                        <th>Issue Date</th>
+                        <th>Return Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in borrowed_records %}
+                    <tr>
+                        <td>{{ record.student_name }}</td>
+                        <td>{{ record.student_id }}</td>
+                        <td>{{ record.branch }}</td>
+                        <td>{{ record.issue_date }}</td>
+                        <td>{{ record.return_date }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+
+    <!-- jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
