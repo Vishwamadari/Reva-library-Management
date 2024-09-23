@@ -1,4 +1,4 @@
-# Due to some mistakes i got some errors will submit the assignment by end of tomorrow
+
 Reva-library-Management
 Overview
 Reva Library Book Management is a Django web application for managing library books. It allows administrators to add, view, edit, and delete book records, while users can view detailed information about books.
